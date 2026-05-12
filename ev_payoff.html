@@ -1,0 +1,146 @@
+<html>
+<head><title>Electric Vehicle payoff calculator</title>
+<style type="text/css">
+   th {text-align: right;}
+   td {text-align: left; }
+   input.text: {text-align: right;}
+</style>
+<script language="javascript"><!--
+
+function calc_form() {
+    // hide the errors and previous value
+    document.tsform.dolperkmev.value = ''
+    document.tsform.dolperkmice.value = ''
+    document.tsform.dolperyrev.value = ''
+    document.tsform.dolperyrice.value = ''
+    document.tsform.costdiff.value = ''
+    document.tsform.evsavingperyr.value = ''
+    document.tsform.years.value = ''
+    //document.tstable.error.visible = false
+
+    newprice   = document.tsform.newprice.value
+    oldprice   = document.tsform.oldprice.value
+    kmperyr    = document.tsform.kmperyr.value
+    dolperkwhr = document.tsform.dolperkwhr.value
+    kmperkwhr  = document.tsform.kmperkwhr.value
+    dolperltr  = document.tsform.dolperltr.value
+    kmperltr   = document.tsform.kmperltr.value
+    svcsaving  = document.tsform.svcsaving.value
+
+    dolperkmev  = dolperkwhr / kmperkwhr
+    dolperkmice = dolperltr / kmperltr
+    dolperyrev  = dolperkmev * kmperyr
+    dolperyrice = dolperkmice * kmperyr
+    costdiff    = newprice - oldprice
+    evsavingperyr = (dolperyrice - dolperyrev) + (svcsaving*1.0)
+    years = costdiff / evsavingperyr
+
+    document.tsform.dolperkmev.value  = dolperkmev.toFixed(2)
+    document.tsform.dolperkmice.value = dolperkmice.toFixed(2)
+    document.tsform.dolperyrev.value  = dolperyrev.toFixed(2)
+    document.tsform.dolperyrice.value = dolperyrice.toFixed(2)
+    document.tsform.costdiff.value    = costdiff.toFixed(2)
+    console.log("EV saving per year:", evsavingperyr, typeof(evsavingperyr))
+    document.tsform.evsavingperyr.value = evsavingperyr.toFixed(2)
+    document.tsform.years.value       = years.toFixed(0) + " years " + ((years * 12) % 12).toFixed(2) + " months"
+
+}
+--></script>
+</head><body>
+
+<h1>EV payoff calculator</h1>
+<p>This form allows you to do a rough calculation of the time it takes to
+pay off buying an EV now.<p>
+<p>Many people know that they want to buy an EV as their next car, but they're
+waiting until their current car dies until they make that choice.  This form
+aims to show that this behaviour actually loses money.  The question is really
+down to how many years it takes to pay off, which depends mostly on the
+up-front expense of the new car and the distance you drive each year.</p>
+<p>Fields in <I>italics</I> are <U>optional</u>.  We provide sensible defaults
+for those based on normal driving.</p>
+
+<form id="tsform" name="tsform">
+<table id="tstable" style="border: 1px solid black;" collapse>
+<tr>
+ <th><label for="newprice">New car price</label></th>
+ <td>$<input type="text" id="newprice" maxlength="7" size="7" value="50000"/></td>
+ <th><label for="oldprice">Current car resale price</label></th>
+ <td>$<input type="text" id="oldprice" maxlength="7" size="7" value="25000"/></td>
+</tr>
+<tr>
+ <th colspan="2"><label for="kmperyr"><i>Kilometres travelled per year</i></label></th>
+ <td colspan="2"><input type="text" id="kmperyr" maxlength="6" size="6" value="15000"/> km/yr</td>
+</tr>
+<tr>
+ <th><label for="dolperkwhr"><i>Cost per kilowatt-hour</i></label></th>
+ <td>$<input type="text" id="dolperkwhr" maxlength="5" size="5" value="0.25"/>/kWHr</td>
+ <th><label for="dolperltr"><i>Cost per litre of fuel</i></label></th>
+ <td>$<input type="text" id="dolperltr" maxlength="5" size="5" value="2.00"/>/litre</td>
+</tr>
+<tr>
+ <th><label for="kmperkwhr"><i>Distance per kilowatt-hour</i></label></th>
+ <td><input type="text" id="kmperkwhr" maxlength="5" size="5" value="6"/> km/kWHr</td>
+ <th><label for="kmperltr"><i>Distance per litre of fuel</i><sup><small>[1]</small></sup></label></th>
+ <td><input type="text" id="kmperltr" maxlength="5" size="5" value="12.00"/> km/litre</td>
+</tr>
+<tr>
+ <th colspan="2"><label for="svcsaving"><i>Reduction in service cost</i></label></th>
+ <td colspan="2">$<input type="text" id="svcsaving" maxlength="5" size="5" value="500"/>/yr</td>
+</tr>
+<tr>
+ <td colspan="2" align="right" style="text-align: right;">
+  <input type="button" onclick="javascript:calc_form();" value="Calculate" />
+ </td>
+ <td colspan="2" align="left" style="text-align: left;">
+  <input type="reset" value="Reset">
+ </td>
+</tr>
+<tr>
+ <td colspan="4" align="center" style="text-align: center;">
+ </td>
+</tr>
+<tr>
+ <th><label for="dolperkmev"><b>Cost of EV per kilometre</b></label></th>
+ <td>$<input type="text" id="dolperkmev" readonly value="" size=10/>/km</td>
+ <th><label for="dolperkmice"><b>Cost of ICE per kilometre</b></label></th>
+ <td>$<input type="text" id="dolperkmice" readonly value="" size=10/>/km</td>
+</tr>
+<tr>
+ <th><label for="dolperyrev"><b>Cost of EV per year</b></label></th>
+ <td>$<input type="text" id="dolperyrev" readonly value="" size=10/>/year</td>
+ <th><label for="dolperyrice"><b>Cost of ICE per year</b></label></th>
+ <td>$<input type="text" id="dolperyrice" readonly value="" size=10/>/year</td>
+</tr>
+<tr>
+ <th colspan="2"><label for="costdiff"><b>Cost of new car investment</b></label></th>
+ <td colspan="2">$<input type="text" id="costdiff" readonly size=10/></td>
+</tr>
+<tr>
+ <th colspan="2"><label for="evsavingperyr"><b>Saving of EV per year</b></label></th>
+ <td colspan="2">$<input type="text" id="evsavingperyr" readonly size=10/>/yr</td>
+</tr>
+<tr>
+ <th colspan="2"><label for="years"><b>Years to pay off</b></label></th>
+ <td colspan="2"><input type="text" id="years" readonly size=16/></td>
+</tr>
+</table>
+</form>
+<h2>Notes</h2>
+<p>[1] Many cars seem to prefer to read this as litres per hundred
+kilometers.  To convert l/100km into km/l, divide 100 by the l/100km.  I'm
+keeping this form as km/l because it simplifies calculation.  Cars give you
+l/100km because as it gets lower it's increasingly insensitive to small
+behaviour changes - you have to drive a lot more carefully to get from
+7l/100km to 6l/100km, whereas getting from 17l/100km to 16l/100km requires
+only a slightly lighter accelerator.  So once you achieve your general
+average it's not really obvious when your driving behaviour changes.
+</p>
+<hr>
+<p>
+<a href="/index.html">Main index</A>
+- &copy; 2026 <a href="mailto:paulway&#64;mabula.net">Paul Wayper</A>
+- code and text Creative Commons Attribution-Sharealike license
+- last updated Monday 11th May 2026</p>
+</body>
+</html>
+
